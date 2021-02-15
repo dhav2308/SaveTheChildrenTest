@@ -1,21 +1,17 @@
 package com.saveTheChildren.UsersInformation.util;
 
-import javax.crypto.Cipher;
-import javax.crypto.spec.SecretKeySpec;
-import java.security.Key;
-import java.util.Base64;
-
 import org.springframework.stereotype.Component;
 
 /**
- * This class contains utility methods for encryption and decryption of users' data.
+ * This class contains utility methods for encryption and decryption of users'
+ * data.
  * 
  * @author Dhavalkumar Dadhania
  *
  */
 @Component
 public class UserUtil {
-	private static final String algorithmUsed = "AES";
+	byte[] inputDataCharArray;
 
 	/**
 	 * This is a method to encrypt the user data .
@@ -25,14 +21,13 @@ public class UserUtil {
 	 * @throws Exception
 	 */
 	public String encryptUserData(String inputData) throws Exception {
-		String secretKey = "dk83ohgxczmwqeis";
-		byte[] inputDataByteArray = secretKey.getBytes();
-		Key key = new SecretKeySpec(inputDataByteArray, algorithmUsed);
-		Cipher cipher = Cipher.getInstance(algorithmUsed);
-		cipher.init(Cipher.ENCRYPT_MODE, key);
-		byte[] encryptedByteArray = cipher.doFinal(inputData.getBytes());
-		String encryptedString = Base64.getEncoder().encodeToString(encryptedByteArray);
+		inputDataCharArray = inputData.getBytes();
+		for (int i = 0; i < inputDataCharArray.length; i++) {
+			inputDataCharArray[i] += 10;
+		}
+		String encryptedString = new String(inputDataCharArray);
 		return encryptedString;
+
 	}
 
 	/**
@@ -42,14 +37,12 @@ public class UserUtil {
 	 * @return a decrypted string
 	 */
 	public String decryptUserData(String inputData) throws Exception {
-		String secretKey = "dk83ohgxczmwqeis";
-		byte[] inputDataByteArray = secretKey.getBytes();
-		Key key = new SecretKeySpec(inputDataByteArray, algorithmUsed);
-		Cipher cipher = Cipher.getInstance(algorithmUsed);
-		cipher.init(Cipher.DECRYPT_MODE, key);
-		byte[] decodedInputData = Base64.getDecoder().decode(inputData.getBytes());
-		byte[] decryptedByteArray = cipher.doFinal(decodedInputData);
-		String decryptedString = new String(decryptedByteArray);
+		inputDataCharArray = inputData.getBytes();
+		for (int i = 0; i < inputDataCharArray.length; i++) {
+			inputDataCharArray[i] -= 10;
+		}
+		String decryptedString = new String(inputDataCharArray);
 		return decryptedString;
+
 	}
 }
